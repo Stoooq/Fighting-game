@@ -43,6 +43,9 @@ body {
         }
 
         .timer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             flex-shrink: 0;
             width: 100px;
             height: 100px;
@@ -68,5 +71,18 @@ body {
                 background-color: blue;
             }
         }
+    }
+
+    .game-result {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        color: #fff;
+        display: none;
     }
 }

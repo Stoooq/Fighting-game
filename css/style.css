@@ -40,6 +40,9 @@ body {
   background-color: blue;
 }
 .game-container .health-bar .timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-shrink: 0;
   width: 100px;
   height: 100px;
@@ -61,4 +64,16 @@ body {
   bottom: 0;
   right: 0;
   background-color: blue;
+}
+.game-container .game-result {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  color: #fff;
+  display: none;
 }/*# sourceMappingURL=style.css.map */

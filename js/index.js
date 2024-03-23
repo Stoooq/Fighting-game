@@ -1,3 +1,4 @@
+import Fighter from "./classes/Fighter.js"
 import Sprite from "./classes/Sprite.js"
 
 const canvas = document.querySelector('canvas')
@@ -8,7 +9,25 @@ canvas.height = 576
 
 c.fillRect(0, 0, canvas.width, canvas.height)
 
-const player = new Sprite({
+const background = new Sprite({
+    position: {
+        x: 0,
+        y: 0
+    },
+    imageSrc: './img/background.png'
+})
+
+const shop = new Sprite({
+    position: {
+        x: 610,
+        y: 128
+    },
+    imageSrc: './img/shop.png',
+    scale: 2.75,
+    framesMax: 6
+})
+
+const player = new Fighter({
     position: {
         x: 0,
         y: 0
@@ -23,7 +42,7 @@ const player = new Sprite({
     }
 })
 
-const enemy = new Sprite({
+const enemy = new Fighter({
     position: {
         x: 400,
         y: 100
@@ -54,19 +73,14 @@ const keys = {
     }
 }
 
-const rectangularCollision = ({ rectangle1, rectangle2 }) => {
-    return (
-        (rectangle1.attackBox.position.x + rectangle1.attackBox.width) >= rectangle2.attackBox.position.x && 
-        rectangle1.attackBox.position.x <= (rectangle2.position.x + rectangle2.width) &&
-        (rectangle1.attackBox.position.y + rectangle1.attackBox.height) >= rectangle2.position.y &&
-        rectangle1.attackBox.position.y <= (rectangle2.position.y + rectangle2.height)
-    )
-}
+decreaseTimer()
 
 const animate = () => {
     window.requestAnimationFrame(animate)
     c.fillStyle = 'black'
     c.fillRect(0, 0, canvas.width, canvas.height)
+    background.update()
+    shop.update()
     player.update()
     enemy.update()
 
@@ -95,7 +109,6 @@ const animate = () => {
         player.isAttacking = false
         enemy.health -= 20
         document.querySelector('#enemyHealth').style.width = enemy.health + '%'
-        console.log("cos");
     }
     if (
         rectangularCollision({
@@ -107,7 +120,10 @@ const animate = () => {
         enemy.isAttacking = false
         player.health -= 20
         document.querySelector('#playerHealth').style.width = player.health + '%'
-        console.log("cosssssss");
+    }
+
+    if (enemy.health <= 0 || player.health <= 0) {
+        determineWinner({ player, enemy, timerId })
     }
 }
 
