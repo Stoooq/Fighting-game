@@ -67,6 +67,14 @@ const player = new Fighter({
         attack: {
             imageSrc: './img/samuraiMack/Attack1.png',
             framesMax: 6,
+        },
+        takeHit: {
+            imageSrc: './img/samuraiMack/Take Hit.png',
+            framesMax: 4,
+        },
+        death: {
+            imageSrc: './img/samuraiMack/Death.png',
+            framesMax: 6,
         }
     },
     attackBox: {
@@ -120,14 +128,22 @@ const enemy = new Fighter({
         attack: {
             imageSrc: './img/kenji/Attack1.png',
             framesMax: 4,
+        },
+        takeHit: {
+            imageSrc: './img/kenji/Take hit.png',
+            framesMax: 3,
+        },
+        death: {
+            imageSrc: './img/kenji/Death.png',
+            framesMax: 7,
         }
     },
     attackBox: {
         offset: {
-            x: -160,
+            x: -165,
             y: 50
         },
-        width: 160,
+        width: 165,
         height: 50
     }
 })
@@ -155,6 +171,8 @@ const animate = () => {
     c.fillRect(0, 0, canvas.width, canvas.height)
     background.update()
     shop.update()
+    c.fillStyle = 'rgba(255, 255, 255, 0.15)'
+    c.fillRect(0, 0, canvas.width, canvas.height)
     player.update()
     enemy.update()
 
@@ -200,10 +218,13 @@ const animate = () => {
         }) && 
         player.isAttacking && 
         player.framesCurrent === 4
-    ) {
+    ) { 
+        enemy.takeHit()
         player.isAttacking = false
-        enemy.health -= 20
-        document.querySelector('#enemyHealth').style.width = enemy.health + '%'
+
+        gsap.to('#enemyHealth', {
+            width: enemy.health + '%'
+        })
     }
 
     if (player.isAttacking && player.framesCurrent === 4) {
@@ -218,9 +239,13 @@ const animate = () => {
         enemy.isAttacking &&
         enemy.framesCurrent === 2
     ) {
+        player.takeHit()
         enemy.isAttacking = false
-        player.health -= 20
-        document.querySelector('#playerHealth').style.width = player.health + '%'
+        
+        gsap.to('#playerHealth', {
+            width: player.health + '%'
+        })
+        
     }
 
     if (enemy.isAttacking && enemy.framesCurrent === 2) {
@@ -235,36 +260,42 @@ const animate = () => {
 animate()
 
 window.addEventListener('keydown', (e) => {
-    switch (e.key) {
-        case 'd':
-            keys.d.pressed = true
-            player.lastKey = 'd'
-            break
-        case 'a':
-            keys.a.pressed = true
-            player.lastKey = 'a'
-            break
-        case 'w':
-            player.velocity.y = -20
-            break
-        case ' ':
-            player.attack()
-            break
+    if (!player.dead) {
+        switch (e.key) {
+            case 'd':
+                keys.d.pressed = true
+                player.lastKey = 'd'
+                break
+            case 'a':
+                keys.a.pressed = true
+                player.lastKey = 'a'
+                break
+            case 'w':
+                player.velocity.y = -20
+                break
+            case ' ':
+                player.attack()
+                break
+        }
+    }
 
-        case 'ArrowRight':
-            keys.ArrowRight.pressed = true
-            enemy.lastKey = 'ArrowRight'
-            break
-        case 'ArrowLeft':
-            keys.ArrowLeft.pressed = true
-            enemy.lastKey = 'ArrowLeft'
-            break
-        case 'ArrowUp':
-            enemy.velocity.y = -20
-            break
-        case 'ArrowDown':
-            enemy.attack()
-            break
+    if (!enemy.dead) {
+        switch (e.key) {
+            case 'ArrowRight':
+                keys.ArrowRight.pressed = true
+                enemy.lastKey = 'ArrowRight'
+                break
+            case 'ArrowLeft':
+                keys.ArrowLeft.pressed = true
+                enemy.lastKey = 'ArrowLeft'
+                break
+            case 'ArrowUp':
+                enemy.velocity.y = -20
+                break
+            case 'ArrowDown':
+                enemy.attack()
+                break
+        }
     }
 })
 
